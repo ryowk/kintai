@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>kintai</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
+</head>
+<body>
+  <div>
+    <canvas id="myChart"></canvas>
+  </div>
+  <script>
+  fetch("./data/2021-09.json")
+    .then(response => response.json())
+    .then(function(json){
+      let keys = Object.keys(json);
+      keys.sort();
+      let hours = [json[keys[0]]];
+      let cum_hours = [json[keys[0]]];
+      for(let i=1; i<keys.length; i++){
+        hours.push(json[keys[i]]);
+        cum_hours.push(cum_hours[i-1] + json[keys[i]]);
+      }
+      var ctx = document.getElementById('myChart');
+      var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: keys,
+          datasets: [{
+            label: 'cumulative hours',
+            data: cum_hours,
+            borderColor: '#f88',
+          }, {
+            label: 'daily hours',
+            data: hours,
+            type: 'bar',
+            backgroundColor: '#f88',
+          }],
+        },
+        options: {
+          plugins: {
+            title: {
+              display: true,
+              text: '2021-09',
+            }
+          },
+          y: {
+            min: 0,
+            max: 40,
+          },
+        },
+      });
+    });
+  </script>
+</body>
+</html>
