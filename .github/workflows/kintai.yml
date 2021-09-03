@@ -1,0 +1,46 @@
+name: kintai
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  push:
+    branches:
+      - main
+  workflow_dispatch: []
+
+env:
+  SLACK_TOKEN: ${{secrets.SLACK_TOKEN}}
+  SLACK_CHANNEL: ${{secrets.SLACK_CHANNEL}}
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up git
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+      - name: Update gh-pages branch
+        run: |
+          git switch gh-pages || git switch -c gh-pages
+          git rebase main
+      - name: Set up python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Execute script
+        run: python main.py
+      - name: Commit and push artifacts
+        run: |
+          git add ./docs/data
+          if ! git diff --staged --exit-code --quiet
+          then
+            git commit -m "update"
+            git push origin gh-pages
+          fi

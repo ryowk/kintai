@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>kintai</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"></script>
+</head>
+<body>
+  <div>
+    <canvas id="chart"></canvas>
+  </div>
+  <div>
+    updated at <span id="updated-at"></span>
+  </div>
+  <script>
+  fetch("./data/display.json")
+    .then(response => response.json())
+    .then(function(display){
+      document.getElementById('updated-at').textContent = display['updated_at']
+
+      // TODO: choose month
+      month = display['months'][0]
+
+      var ctx = document.getElementById('chart');
+      var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: month['dates'],
+          datasets: [{
+            label: 'cumulative hours',
+            data: month['cumulative_hours'],
+            borderColor: '#f88',
+          }, {
+            label: 'daily hours',
+            data: month['daily_hours'],
+            type: 'bar',
+            backgroundColor: '#f88',
+          }],
+        },
+        options: {
+          plugins: {
+            title: {
+              display: true,
+              text: month['year_month'],
+            }
+          },
+          y: {
+            min: 0,
+            max: 40,
+          },
+        },
+      });
+    });
+  </script>
+</body>
+</html>
