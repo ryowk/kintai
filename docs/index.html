@@ -10,29 +10,24 @@
     <canvas id="myChart"></canvas>
   </div>
   <script>
-  fetch("./data/2021-09.json")
+  fetch("./data/history.json")
     .then(response => response.json())
-    .then(function(json){
-      let keys = Object.keys(json);
-      keys.sort();
-      let hours = [json[keys[0]]];
-      let cum_hours = [json[keys[0]]];
-      for(let i=1; i<keys.length; i++){
-        hours.push(json[keys[i]]);
-        cum_hours.push(cum_hours[i-1] + json[keys[i]]);
-      }
+    .then(function(history){
+      // TODO: choose month
+      month = history['months'][0]
+
       var ctx = document.getElementById('myChart');
       var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: keys,
+          labels: month['dates'],
           datasets: [{
             label: 'cumulative hours',
-            data: cum_hours,
+            data: month['cumulative_hours'],
             borderColor: '#f88',
           }, {
             label: 'daily hours',
-            data: hours,
+            data: month['daily_hours'],
             type: 'bar',
             backgroundColor: '#f88',
           }],
@@ -41,7 +36,7 @@
           plugins: {
             title: {
               display: true,
-              text: '2021-09',
+              text: month['year_month'],
             }
           },
           y: {
