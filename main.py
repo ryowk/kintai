@@ -2,6 +2,7 @@ import calendar
 import datetime
 import json
 import os
+from itertools import accumulate
 from pathlib import Path
 from typing import NamedTuple
 
@@ -104,6 +105,41 @@ def main():
         with open(save_path, 'w') as f:
             json.dump(summary, f)
         logger.info(f"saved {save_path}")
+
+    """
+    {
+        "updated_at": 2020-01-01 00:00:00"
+        "months": [
+            {
+                "year_month": "2020-01",
+                "dates": ["2020-01-01", "2020-01-02", "2020-01-03"],
+                "daily_hours": [1.0, 2.0, 3.0],
+                "cumulative_hours": [1.0, 3.0, 6.0]
+            }
+        ]
+    }
+    """
+    months = []
+    for year, month in targets:
+        path = Path('./docs/data') / f'{year}-{month:02}.json'
+        with open(path) as f:
+            summary = json.load(f)
+        year_month = f'{year}-{month:02}'
+        dates = sorted(summary.keys())
+        daily_hours = [summary[d] for d in dates]
+        cumulative_hours = list(accumulate(daily_hours))
+        months.append({
+            'year_month': year_month,
+            'dates': dates,
+            'daily_hours': daily_hours,
+            'cumulative_hours': cumulative_hours,
+        })
+    history = {
+        'updated_at': datetime.datetime.now(JST).strftime('%Y-%m-%d %H:%M:%S'),
+        'months': months,
+    }
+    with open('./docs/data/history.json', 'w') as f:
+        json.dump(history, f)
 
 
 if __name__ == '__main__':
