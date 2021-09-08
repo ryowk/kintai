@@ -20,22 +20,20 @@ class Record(NamedTuple):
 
 
 def list_all_dates(year: int, month: int) -> list[str]:
-    dates = []
-    for day in range(32):
-        try:
-            dates.append(datetime.datetime(year, month, day).date())
-        except ValueError:
-            pass
+    days = range(1, calendar.monthrange(year, month)[1] + 1)
+    dates = [datetime.datetime(year, month, day).date() for day in days]
     return dates
 
 
-def calc_hours(date: datetime.date, records: list[NamedTuple]) -> float:
+def calc_hours(date: datetime.date, records: list[Record]) -> float:
     if len(records) == 0:
         return 0
     if records[0].kind:
-        records.insert(0, Record(datetime.datetime(date.year, date.month, date.day, 0, 0, 0, tzinfo=JST), False))
+        dt_start = datetime.datetime(date.year, date.month, date.day, 0, 0, 0, tzinfo=JST)
+        records.insert(0, Record(dt_start, False))
     if not records[-1].kind:
-        records.append(Record(datetime.datetime(date.year, date.month, date.day, 23, 59, 59, tzinfo=JST), True))
+        dt_end = min(datetime.datetime.now(JST), datetime.datetime(date.year, date.month, date.day, 23, 59, 59, tzinfo=JST))
+        records.append(Record(dt_end, True))
 
     total_seconds = 0
 
@@ -68,10 +66,12 @@ def main():
 
         client = WebClient(token=os.environ['SLACK_TOKEN'])
 
+        # TODO: pagination
         response = client.conversations_history(
             channel=os.environ['SLACK_CHANNEL'],
             oldest=dt_start.timestamp(),
             latest=dt_end.timestamp(),
+            inclusive=True,
         )
         records = []
         for x in response['messages']:
