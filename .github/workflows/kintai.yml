@@ -11,6 +11,7 @@ on:
 env:
   SLACK_TOKEN: ${{secrets.SLACK_TOKEN}}
   SLACK_CHANNEL: ${{secrets.SLACK_CHANNEL}}
+  TZ: Asia/Tokyo
 
 jobs:
   update:
