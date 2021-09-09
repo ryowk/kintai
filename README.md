@@ -1,6 +1,8 @@
 # kintai
 Collect and display daily working hours
 
+https://ryowk.github.io/kintai/
+
 ## Artifacts
 ### Monthly Report
 `./docs/data/YYYY-MM.json`
