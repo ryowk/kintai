@@ -37,11 +37,20 @@ jobs:
         run: pip install -r requirements.txt
       - name: Execute script
         run: python main.py
-      - name: Commit and push artifacts
+      - name: Commit new artifacts
+        run: |
+          new_artifacts=$(git ls-files ./docs/data --others)
+          if [ -n "$new_artifacts" ]
+          then
+            git add ./docs/data
+            git commit -m "$new_artifacts"
+          fi
+      - name: Commit updated artifacts
         run: |
           git add ./docs/data
           if ! git diff --staged --exit-code --quiet
           then
-            git commit -m "update"
-            git push -f origin gh-pages
+            git commit --amend --no-edit
           fi
+      - name: Push
+        run: git push -f origin gh-pages
