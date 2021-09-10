@@ -199,7 +199,7 @@ def main():
             'cumulative_hours': cumulative_hours,
         })
     display = {
-        'updated_at': datetime.datetime.now(JST).isoformat(),
+        'updated_at': datetime.datetime.now(JST).strftime("%Y-%m-%d %H:%M:%S"),
         'months': months,
     }
     save_path = DATA_DIR / 'display.json'

@@ -14,7 +14,7 @@ https://ryowk.github.io/kintai/
 `./docs/data/display.json`
 ```json
 {
-    "updated_at": "2020-01-01T00:00:00+09:00",
+    "updated_at": "2020-01-01 00:00:00",
     "months": [
         {
             "year_month": "2020-01",
