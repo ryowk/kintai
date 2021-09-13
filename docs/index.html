@@ -17,7 +17,8 @@
   </div>
 
   <script>
-  const display = await (await fetch("data/display.json")).json()
+  const response = await fetch("data/display.json");
+  const display = await response.json();
 
   // updated-at
   document.getElementById('updated-at').textContent = display['updated_at']
