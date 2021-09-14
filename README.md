@@ -32,3 +32,8 @@ https://ryowk.github.io/kintai/
     * required: `conversations.history`
 * `SLACK_CHANNEL`
     * conversation id
+
+## Development
+```console
+docker-compose up
+```
