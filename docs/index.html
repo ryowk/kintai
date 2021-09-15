@@ -9,48 +9,68 @@
   <div>
     <canvas id="chart"></canvas>
   </div>
+  <div style="text-align:right">
+    <select id="month"></select>
+  </div>
   <div style="font-size:small; text-align:right">
     updated at <span id="updated-at"></span>
   </div>
   <script>
-  fetch("./data/display.json")
+  fetch("data/display.json")
     .then(response => response.json())
     .then(function(display){
-      document.getElementById('updated-at').textContent = display['updated_at']
 
-      // TODO: choose month
-      month = display['months'][0]
+    document.getElementById('updated-at').textContent = display['updated_at']
+    render(display['months'][0]);
 
-      var ctx = document.getElementById('chart');
-      var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: month['dates'],
-          datasets: [{
-            label: 'cumulative hours',
-            data: month['cumulative_hours'],
-            borderColor: '#f88',
-          }, {
-            label: 'daily hours',
-            data: month['daily_hours'],
-            type: 'bar',
-            backgroundColor: '#f88',
-          }],
-        },
-        options: {
-          plugins: {
-            title: {
-              display: true,
-              text: month['year_month'],
-            }
-          },
-          y: {
-            min: 0,
-            max: 40,
-          },
-        },
-      });
+    // month selector
+    const monthSelect = document.querySelector("#month");
+    display['months'].forEach(function(month){
+      option = document.createElement('option');
+      option.value = option.textContent = month['year_month'];
+      monthSelect.appendChild(option);
     });
+    monthSelect.addEventListener('change', function(){
+      const idx = this.selectedIndex;
+      render(display['months'][idx]);
+    });
+
+  });
+
+  function render(month){
+    if(typeof myChart !== 'undefined'){
+      myChart.destroy();
+    }
+    const ctx = document.getElementById('chart');
+    myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: month['dates'],
+        datasets: [{
+          label: 'cumulative hours',
+          data: month['cumulative_hours'],
+          borderColor: '#f88',
+        }, {
+          label: 'daily hours',
+          data: month['daily_hours'],
+          type: 'bar',
+          backgroundColor: '#f88',
+        }],
+      },
+      options: {
+        plugins: {
+          title: {
+            display: true,
+            text: month['year_month'],
+          }
+        },
+        y: {
+          min: 0,
+          max: 40,
+        },
+      },
+    });
+  };
   </script>
 </body>
 </html>
