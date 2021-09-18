@@ -3,6 +3,46 @@ Collect and display daily working hours
 
 https://ryowk.github.io/kintai/
 
+TZ: JST
+
+## Usage
+1. Fork this repository
+1. Create a slack channel
+1. Add a slack app to the channel
+1. Set the slack conversation id and the access token as repository secrets (see [here](#secrets))
+1. Execute workflow `kintai` (or create `gh-pages` branch from `main`)
+1. Set GitHub pages source as following
+    * branch: `gh-pages`
+    * folder: `/docs`
+1. Post texts to the channel (see [here](#format))
+1. View the published page https://_owner_.github.io/kintai/
+
+### Format
+```
+<sign>
+```
+posted datetime is used
+```
+<sign> <datetime>
+```
+specified datetime is used
+
+#### Allowed signs
+##### Start
+* `開始`
+
+##### End
+* `終了`
+
+#### Allowed datetime format
+`YYYY-MM-DDThh:mm:ss`
+
+#### Examples
+* `開始`
+* `開始 2020-01-01T12:34:56`
+* `終了`
+* `終了 2020-01-01T12:34:56`
+
 ## Artifacts
 ### Monthly Report
 `./docs/data/YYYY-MM.json`
